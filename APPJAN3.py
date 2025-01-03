@@ -4,6 +4,7 @@ from PIL import Image
 import numpy as np
 import torch
 import torchvision
+import time
 
 from torchvision.models import resnet50, ResNet50_Weights
 
@@ -33,7 +34,7 @@ def predict(model, img):
 st.title("Image Classifier")
 count = st_autorefresh(interval=4000, limit=100, key="fizzbuzzcounter")
 
-directory1 = "C:\\Users\\dell\\OneDrive\\Desktop\\Images\\"
+directory1 = "Images"
 import os
 
 directory = os.fsencode(directory1)
@@ -43,7 +44,7 @@ for file in os.listdir(directory):
     filename = os.fsdecode(file)
     if filename.endswith(".png") or filename.endswith(".jpg"):
         # print(os.path.join(directory, filename))
-        image = Image.open("C:\\Users\\dell\\OneDrive\\Desktop\\Images\\"+filename)
+        image = Image.open("Images/"+filename)
         st.image(image, caption='Uploaded Image', use_column_width=True)
 
         # Preprocess the image
