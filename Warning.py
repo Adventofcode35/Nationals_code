@@ -6,3 +6,4 @@ import torch
 import torchvision
 from torchvision.models import resnet50, ResNet50_Weights
 import os
+st.title("Image Classifier For Railways")
