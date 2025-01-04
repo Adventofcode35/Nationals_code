@@ -4,9 +4,9 @@ from PIL import Image
 import numpy as np
 import torch
 import torchvision
-import time
-
 from torchvision.models import resnet50, ResNet50_Weights
+import os
+import time
 
 # Load the pre-trained ResNet50 model
 model = resnet50(weights=ResNet50_Weights.IMAGENET1K_V2)
@@ -31,26 +31,21 @@ def predict(model, img):
         return top_p.numpy(), top_class.numpy()
 
 # Create the Streamlit app
-st.title("Image Classifier")
-count = st_autorefresh(interval=4000, limit=100, key="fizzbuzzcounter")
+st.title("Image Classifier For Railways")
+
+placeholder = st.empty()
+placeholder2 = st.empty()
 
 directory1 = "Images"
-import os
-
 directory = os.fsencode(directory1)
-
 
 for file in os.listdir(directory):
     filename = os.fsdecode(file)
     if filename.endswith(".png") or filename.endswith(".jpg"):
-        # print(os.path.join(directory, filename))
-        image = Image.open("Images/"+filename)
-        st.image(image, caption='Uploaded Image', use_column_width=True)
-
-        # Preprocess the image
+        # Process for each image
+        image = Image.open("Images/" + filename)
+        placeholder.image(image, caption='Uploaded Image', use_container_width=True)
         processed_image = preprocess_image(image)
-
-        # Make a prediction
         probs, classes = predict(model, processed_image)
 
         # Get the class names from the ImageNet labels
@@ -58,8 +53,17 @@ for file in os.listdir(directory):
         with open(labels_path, 'r') as f:
             labels = [line.strip() for line in f.readlines()]
 
-        # Display the top 5 predictions
-        for p, c in zip(probs, classes):
-            st.write(f"{labels[c]:20}: {p:.2f}")
-        continue
 
+        # Display the top 5 predictions in placeholder2
+        string = ""
+        for p, c in zip(probs, classes):
+            string += f"{labels[c]:20}: {p:.2f}\n"
+        placeholder2.text(string)
+
+        # Add a small delay for better visualization
+        time.sleep(4) 
+
+        # Clear both placeholders for the next image
+        placeholder.empty()
+        placeholder2.empty()  # Uncomment this if you want to clear after each image
+        
